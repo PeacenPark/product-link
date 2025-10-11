@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f3ff 0%, #fce7f3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            z-index: 100;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .add-btn-container {
+            text-align: right;
+            margin-bottom: 30px;
+        }
+
+        .add-btn {
+            background: #9333ea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #7e22ce;
+            transform: scale(1.05);
+        }
+
+        .loading, .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .loading p {
+            color: #6b7280;
+            font-size: 1.2rem;
+        }
+
+        .empty-state p {
+            color: #9ca3af;
+            font-size: 1.2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+        }
+
+        .product-image-container {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-image-container:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .product-image-container:hover .product-overlay {
+            background: rgba(0,0,0,0.3);
+            opacity: 1;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-description {
+            color: #374151;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #2563eb;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .close-btn:hover {
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input[type="file"],
+        .form-group input[type="url"],
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .image-preview {
+            margin-top: 10px;
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background: #d1d5db;
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 12px;
+            background: #9333ea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #7e22ce;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-badge">관리자 모드</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>상품 관리</h1>
+            <p>상품을 추가, 수정, 삭제할 수 있습니다</p>
+        </div>
+
+        <div class="add-btn-container">
+            <button class="add-btn" onclick="openModal()">
+                <span>+</span>
+                등록하기
+            </button>
+        </div>
+
+        <div id="productsContainer">
+            <div class="loading">
+                <p>데이터를 불러오는 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">상품 등록</h2>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="form-group">
+                <label>상품 이미지</label>
+                <input type="file" id="imageInput" accept="image/*" onchange="previewImage()">
+                <img id="imagePreview" class="image-preview" style="display: none;">
+            </div>
+            <div class="form-group">
+                <label>링크 URL</label>
+                <input type="url" id="linkInput" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label>상품 설명</label>
+                <textarea id="descriptionInput" rows="3" placeholder="상품에 대한 설명을 입력하세요"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">취소</button>
+                <button class="btn-submit" onclick="submitForm()">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <script>
+        var firebaseConfig = {
+            apiKey: "AIzaSyA60Zi6MF_o2MXKw731xADQQ16NjouQRy8",
+            authDomain: "shorts-links-4678a.firebaseapp.com",
+            projectId: "shorts-links-4678a",
+            storageBucket: "shorts-links-4678a.firebasestorage.app",
+            messagingSenderId: "873212558361",
+            appId: "1:873212558361:web:cff2e1670d5436b77bfe88"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+        var storage = firebase.storage();
+        var editingId = null;
+
+        window.onload = function() {
+            loadProducts();
+        };
+
+        function loadProducts() {
+            var container = document.getElementById('productsContainer');
+            container.innerHTML = '<div class="loading"><p>데이터를 불러오는 중...</p></div>';
+
+            db.collection('products').get()
+                .then(function(querySnapshot) {
+                    var products = [];
+                    querySnapshot.forEach(function(doc) {
+                        products.push({
+                            id: doc.id,
+                            data: doc.data()
+                        });
+                    });
+                    products.reverse();
+                    renderProducts(products);
+                })
+                .catch(function(error) {
+                    console.error('데이터 로드 실패:', error);
+                    alert('Firestore 오류: ' + error.message);
+                    container.innerHTML = '<div class="empty-state"><p>데이터를 불러올 수 없습니다</p></div>';
+                });
+        }
+
+        function renderProducts(products) {
+            var container = document.getElementById('productsContainer');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>등록된 상품이 없습니다</p></div>';
+                return;
+            }
+
+            var html = '<div class="products-grid">';
+            for (var i = 0; i < products.length; i++) {
+                var product = products[i];
+                var data = product.data;
+                
+                html += '<div class="product-card">';
+                html += '<div class="product-image-container" onclick="openLink(\'' + data.link.replace(/'/g, "\\'") + '\')">';
+                html += '<img src="' + data.image + '" alt="상품" class="product-image">';
+                html += '<div class="product-overlay">구매하러 가기 →</div>';
+                html += '</div>';
+                html += '<div class="product-info">';
+                html += '<p class="product-description">' + data.description + '</p>';
+                html += '<div class="product-actions">';
+                html += '<button class="btn btn-edit" onclick="editProduct(\'' + product.id + '\')">✏️ 수정</button>';
+                html += '<button class="btn btn-delete" onclick="deleteProduct(\'' + product.id + '\')">🗑️ 삭제</button>';
+                html += '</div>';
+                html += '</div></div>';
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function openModal(productId) {
+            var modal = document.getElementById('modal');
+            var modalTitle = document.getElementById('modalTitle');
+            var imageInput = document.getElementById('imageInput');
+            var imagePreview = document.getElementById('imagePreview');
+            var linkInput = document.getElementById('linkInput');
+            var descriptionInput = document.getElementById('descriptionInput');
+
+            if (productId) {
+                editingId = productId;
+                modalTitle.textContent = '상품 수정';
+                
+                db.collection('products').doc(productId).get()
+                    .then(function(doc) {
+                        if (doc.exists) {
+                            var data = doc.data();
+                            imagePreview.src = data.image;
+                            imagePreview.style.display = 'block';
+                            linkInput.value = data.link;
+                            descriptionInput.value = data.description;
+                        }
+                    });
+            } else {
+                editingId = null;
+                modalTitle.textContent = '상품 등록';
+                imageInput.value = '';
+                imagePreview.style.display = 'none';
+                linkInput.value = '';
+                descriptionInput.value = '';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function previewImage() {
+            var file = document.getElementById('imageInput').files[0];
+            var preview = document.getElementById('imagePreview');
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function submitForm() {
+            var imagePreview = document.getElementById('imagePreview');
+            var imageFile = document.getElementById('imageInput').files[0];
+            var link = document.getElementById('linkInput').value;
+            var description = document.getElementById('descriptionInput').value;
+
+            if (!imagePreview.src || !link || !description) {
+                alert('모든 필드를 입력해주세요!');
+                return;
+            }
+
+            var productData = {
+                link: link,
+                description: description,
+                timestamp: Date.now()
+            };
+
+            if (imageFile) {
+                var storageRef = storage.ref('products/' + Date.now() + '_' + imageFile.name);
+                storageRef.put(imageFile).then(function(snapshot) {
+                    return snapshot.ref.getDownloadURL();
+                }).then(function(downloadURL) {
+                    productData.image = downloadURL;
+                    saveProduct(productData);
+                }).catch(function(error) {
+                    alert('이미지 업로드 실패: ' + error.message);
+                });
+            } else {
+                productData.image = imagePreview.src;
+                saveProduct(productData);
+            }
+        }
+
+        function saveProduct(productData) {
+            if (editingId) {
+                db.collection('products').doc(editingId).update(productData)
+                    .then(function() {
+                        alert('수정되었습니다!');
+                        closeModal();
+                        loadProducts();
+                    })
+                    .catch(function(error) {
+                        alert('수정 실패: ' + error.message);
+                        console.error('수정 오류:', error);
+                    });
+            } else {
+                db.collection('products').add(productData)
+                    .then(function() {
+                        alert('등록되었습니다!');
+                        closeModal();
+                        loadProducts();
+                    })
+                    .catch(function(error) {
+                        alert('등록 실패: ' + error.message);
+                        console.error('등록 오류:', error);
+                    });
+            }
+        }
+
+        function editProduct(id) {
+            openModal(id);
+        }
+
+        function deleteProduct(id) {
+            if (confirm('정말 삭제하시겠습니까?')) {
+                db.collection('products').doc(id).delete()
+                    .then(function() {
+                        alert('삭제되었습니다!');
+                        loadProducts();
+                    })
+                    .catch(function(error) {
+                        alert('삭제 실패: ' + error.message);
+                    });
+            }
+        }
+
+        function openLink(url) {
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
