@@ -30,27 +30,33 @@
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            color: #1f2937;
-            margin-bottom: 10px;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #8B4513 0%, #D2691E 20%, #FF6B35 40%, #FFA500 60%, #4A90E2 80%, #2E5C8A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -3px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .header h1::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #8B4513 0%, #D2691E 20%, #FF6B35 40%, #FFA500 60%, #4A90E2 80%, #2E5C8A 100%);
+            border-radius: 4px;
         }
 
         .header p {
             color: #6b7280;
             font-size: 1rem;
-        }
-
-        .loading, .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .loading p {
-            color: #6b7280;
-            font-size: 1.2rem;
         }
 
         .empty-state p {
