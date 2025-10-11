@@ -30,33 +30,52 @@
         }
 
         .header h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            background: linear-gradient(90deg, #8B4513 0%, #D2691E 20%, #FF6B35 40%, #FFA500 60%, #4A90E2 80%, #2E5C8A 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 15px;
-            letter-spacing: -3px;
-            position: relative;
-            display: inline-block;
-            font-family: 'Arial Black', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
-        .header h1::before {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            right: 0;
-            height: 8px;
-            background: linear-gradient(90deg, #8B4513 0%, #D2691E 20%, #FF6B35 40%, #FFA500 60%, #4A90E2 80%, #2E5C8A 100%);
-            border-radius: 4px;
+        .header h1 .icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 .icon svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
         }
 
         .header p {
             color: #6b7280;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .loading, .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .loading p {
+            color: #6b7280;
+            font-size: 1.2rem;
         }
 
         .empty-state p {
@@ -66,17 +85,19 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
 
         .product-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: all 0.3s;
-            padding: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-card:hover {
@@ -124,7 +145,15 @@
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            .header h1 .icon {
+                width: 40px;
+                height: 40px;
+            }
+            .header h1 .icon svg {
+                width: 24px;
+                height: 24px;
             }
             .products-grid {
                 grid-template-columns: 1fr;
@@ -135,7 +164,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>오니겨미네</h1>
+            <h1>
+                <span class="icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                    </svg>
+                </span>
+                오니겨미네
+            </h1>
             <p>이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
         </div>
 
