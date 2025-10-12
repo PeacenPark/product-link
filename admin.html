@@ -43,13 +43,38 @@
 
         .header h1 {
             font-size: 2.5rem;
-            color: #1f2937;
+            font-weight: 700;
+            color: #111827;
             margin-bottom: 10px;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .header h1 .icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 .icon svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
         }
 
         .header p {
             color: #6b7280;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            font-weight: 400;
         }
 
         .add-btn-container {
@@ -97,55 +122,76 @@
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
         }
 
         .product-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: all 0.3s;
-            padding: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-card:hover {
-            box-shadow: 0 10px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
         }
 
         .product-banner {
             display: flex;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+
+        .product-banner a {
+            display: block;
+            transition: transform 0.3s;
+            width: 100%;
+        }
+
+        .product-banner a:hover {
+            transform: scale(1.02);
+        }
+
+        .product-banner img {
+            border-radius: 8px;
+            width: 100%;
+            height: auto;
         }
 
         .product-description {
-            color: #374151;
-            line-height: 1.6;
+            color: #1f2937;
+            line-height: 1.5;
             text-align: center;
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 12px;
+            padding-top: 12px;
             border-top: 1px solid #e5e7eb;
-            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
 
         .product-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 4px;
             transition: all 0.3s;
         }
 
@@ -328,10 +374,40 @@
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.8rem;
+            }
+            .header h1 .icon {
+                width: 40px;
+                height: 40px;
+            }
+            .header h1 .icon svg {
+                width: 24px;
+                height: 24px;
             }
             .products-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+            .product-card {
+                padding: 10px !important;
+            }
+            .product-description {
+                font-size: 0.9rem !important;
+                font-weight: 600 !important;
+            }
+            .btn {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+            .product-card {
+                padding: 8px !important;
             }
         }
     </style>
@@ -341,7 +417,14 @@
 
     <div class="container">
         <div class="header">
-            <h1>상품 관리</h1>
+            <h1>
+                <span class="icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                    </svg>
+                </span>
+                오니겨미네
+            </h1>
             <p>쿠팡 파트너스 배너 코드를 등록하세요</p>
         </div>
 
