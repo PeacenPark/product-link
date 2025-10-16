@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상품 링크</title>
+    <title>오니겨미네 - 큐레이션 쇼핑</title>
     <style>
         * {
             margin: 0;
@@ -12,202 +12,510 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f3ff 0%, #fce7f3 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+            background: #f8f9fa;
             min-height: 100vh;
-            padding: 20px;
         }
 
-        .container {
-            max-width: 1200px;
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
             margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 10px;
-            letter-spacing: -1px;
+            padding: 0 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
             gap: 12px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-decoration: none;
         }
 
-        .header h1 .icon {
-            width: 48px;
-            height: 48px;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        .header h1 .icon svg {
-            width: 28px;
-            height: 28px;
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
             fill: white;
         }
 
-        .header p {
-            color: #6b7280;
-            font-size: 0.95rem;
-            font-weight: 400;
+        /* Search Bar */
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 30px;
         }
 
-        .loading, .empty-state {
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            pointer-events: none;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .filter-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .category-select {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .category-select:hover {
+            border-color: #667eea;
+        }
+
+        .category-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .sort-select {
+            padding: 10px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: white;
+        }
+
+        /* Loading */
+        .loading {
             text-align: center;
             padding: 80px 20px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .loading p {
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Products Grid */
+        .products-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .product-count {
             color: #6b7280;
-            font-size: 1.2rem;
-        }
-
-        .empty-state p {
-            color: #9ca3af;
-            font-size: 1.2rem;
+            font-size: 0.95rem;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
         }
 
         .product-card {
             background: white;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             transition: all 0.3s;
-            padding: 16px;
             display: flex;
             flex-direction: column;
         }
 
         .product-card:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            position: relative;
+            width: 100%;
+            padding: 16px;
+            background: #fafafa;
         }
 
         .product-banner {
             display: flex;
             justify-content: center;
-            margin-bottom: 12px;
-            flex: 1;
+            align-items: center;
+            min-height: 200px;
         }
 
         .product-banner a {
             display: block;
-            transition: transform 0.3s;
             width: 100%;
+            transition: transform 0.3s;
         }
 
         .product-banner a:hover {
-            transform: scale(1.02);
+            transform: scale(1.05);
         }
 
         .product-banner img {
             border-radius: 8px;
             width: 100%;
             height: auto;
+            display: block;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-description {
             color: #1f2937;
-            line-height: 1.5;
-            text-align: center;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e5e7eb;
             font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex: 1;
+        }
+
+        .product-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .product-category {
+            background: #f3f4f6;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
-        .coupang-notice {
+        /* Empty State */
+        .empty-state {
             text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 10px;
-            font-size: 0.85rem;
-            color: #6b7280;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
         }
 
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: #374151;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            color: #6b7280;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .coupang-notice {
+            background: #fef3c7;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .header h1 {
+            .search-container {
+                display: none;
+            }
+
+            .hero h1 {
                 font-size: 1.8rem;
             }
-            .header h1 .icon {
-                width: 40px;
-                height: 40px;
+
+            .hero p {
+                font-size: 1rem;
             }
-            .header h1 .icon svg {
-                width: 24px;
-                height: 24px;
+
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
             }
+
+            .category-select,
+            .sort-select {
+                width: 100%;
+            }
+
             .products-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 12px !important;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
             }
+
             .product-card {
-                padding: 10px !important;
+                box-shadow: 0 1px 6px rgba(0,0,0,0.08);
             }
+
+            .product-info {
+                padding: 15px;
+            }
+
             .product-description {
-                font-size: 0.8rem !important;
+                font-size: 0.9rem;
+            }
+
+            .product-banner {
+                min-height: 150px;
             }
         }
-        
+
         @media (max-width: 480px) {
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 10px !important;
+            .nav-container {
+                height: 60px;
             }
-            .product-card {
-                padding: 8px !important;
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            .hero {
+                padding: 35px 20px;
+            }
+
+            .product-image {
+                padding: 12px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>
-                <span class="icon">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
                     </svg>
                 </span>
                 오니겨미네
-            </h1>
+            </a>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="기저귀, 분유, 장난감 등을 검색해보세요..." onkeyup="handleSearch()">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>👶 우리 아이를 위한 엄선된 육아용품</h1>
             <p>이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
         </div>
 
-        <div id="productsContainer">
-            <div class="loading">
-                <p>데이터를 불러오는 중...</p>
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <select class="category-select" id="categorySelect" onchange="handleCategoryChange()">
+                    <option value="all">전체 카테고리</option>
+                    <option value="기저귀/물티슈">기저귀/물티슈</option>
+                    <option value="분유/이유식">분유/이유식</option>
+                    <option value="장난감/완구">장난감/완구</option>
+                    <option value="유아의류">유아의류</option>
+                    <option value="유모차/카시트">유모차/카시트</option>
+                    <option value="수납/정리">수납/정리</option>
+                    <option value="목욕/위생">목욕/위생</option>
+                    <option value="수유용품">수유용품</option>
+                    <option value="안전용품">안전용품</option>
+                    <option value="기타">기타</option>
+                </select>
+                
+                <select class="sort-select" id="sortSelect" onchange="handleSort()">
+                    <option value="latest">최신순</option>
+                    <option value="oldest">등록순</option>
+                </select>
             </div>
         </div>
 
-        <div class="coupang-notice">
-            이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+        <!-- Products Section -->
+        <div class="products-section">
+            <div class="section-header">
+                <h2 class="section-title">추천 육아용품</h2>
+                <span class="product-count" id="productCount">로딩 중...</span>
+            </div>
+            
+            <div id="productsContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p style="color: #6b7280;">육아용품을 불러오는 중...</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">오니겨미네</div>
+            <p class="footer-text">
+                안전하고 믿을 수 있는 육아용품만을 엄선하여 소개합니다.<br>
+                우리 아이를 위한 현명한 선택을 도와드립니다.
+            </p>
+            <div class="coupang-notice">
+                이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+            </div>
+        </div>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -224,6 +532,9 @@
 
         firebase.initializeApp(firebaseConfig);
         var db = firebase.firestore();
+        var allProducts = [];
+        var filteredProducts = [];
+        var currentCategory = 'all';
 
         window.onload = function() {
             loadProducts();
@@ -231,31 +542,35 @@
 
         function loadProducts() {
             var container = document.getElementById('productsContainer');
-            container.innerHTML = '<div class="loading"><p>데이터를 불러오는 중...</p></div>';
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p style="color: #6b7280;">육아용품을 불러오는 중...</p></div>';
 
             db.collection('products').get()
                 .then(function(querySnapshot) {
-                    var products = [];
+                    allProducts = [];
                     querySnapshot.forEach(function(doc) {
-                        products.push({
+                        allProducts.push({
                             id: doc.id,
                             data: doc.data()
                         });
                     });
-                    products.reverse();
-                    renderProducts(products);
+                    allProducts.reverse();
+                    filteredProducts = allProducts;
+                    renderProducts(filteredProducts);
                 })
                 .catch(function(error) {
                     console.error('데이터 로드 실패:', error);
-                    container.innerHTML = '<div class="empty-state"><p>데이터를 불러올 수 없습니다</p></div>';
+                    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h3>상품을 불러올 수 없습니다</h3><p>잠시 후 다시 시도해주세요</p></div>';
                 });
         }
 
         function renderProducts(products) {
             var container = document.getElementById('productsContainer');
+            var countElement = document.getElementById('productCount');
+            
+            countElement.textContent = '총 ' + products.length + '개';
             
             if (products.length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>등록된 상품이 없습니다</p></div>';
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h3>육아용품이 없습니다</h3><p>다른 카테고리를 선택해보세요</p></div>';
                 return;
             }
 
@@ -263,16 +578,108 @@
             for (var i = 0; i < products.length; i++) {
                 var product = products[i];
                 var data = product.data;
+                var category = data.category || '기타';
                 
-                html += '<div class="product-card">';
+                html += '<div class="product-card" data-product-id="' + product.id + '">';
+                html += '<div class="product-image">';
                 html += '<div class="product-banner">' + data.bannerCode + '</div>';
+                html += '</div>';
+                html += '<div class="product-info">';
                 if (data.description) {
                     html += '<div class="product-description">' + data.description + '</div>';
                 }
+                html += '<div class="product-meta">';
+                html += '<span class="product-category">' + category + '</span>';
+                html += '</div>';
+                html += '</div>';
                 html += '</div>';
             }
             html += '</div>';
             container.innerHTML = html;
+            
+            // 클릭 이벤트 리스너 추가
+            attachClickListeners();
+        }
+
+        function attachClickListeners() {
+            var cards = document.querySelectorAll('.product-card');
+            cards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    var productId = this.getAttribute('data-product-id');
+                    if (productId) {
+                        trackClick(productId);
+                    }
+                });
+            });
+        }
+
+        function trackClick(productId) {
+            db.collection('products').doc(productId).get()
+                .then(function(doc) {
+                    if (doc.exists) {
+                        var currentClicks = doc.data().clickCount || 0;
+                        return db.collection('products').doc(productId).update({
+                            clickCount: currentClicks + 1
+                        });
+                    }
+                })
+                .catch(function(error) {
+                    console.error('클릭 카운팅 오류:', error);
+                });
+        }
+
+        function handleCategoryChange() {
+            var category = document.getElementById('categorySelect').value;
+            currentCategory = category;
+            
+            if (category === 'all') {
+                filteredProducts = allProducts;
+            } else {
+                filteredProducts = allProducts.filter(function(product) {
+                    return product.data.category === category;
+                });
+            }
+            
+            renderProducts(filteredProducts);
+        }
+
+        function handleSort() {
+            var sortValue = document.getElementById('sortSelect').value;
+            
+            if (sortValue === 'latest') {
+                filteredProducts.reverse();
+            } else if (sortValue === 'oldest') {
+                filteredProducts.reverse();
+            }
+            
+            renderProducts(filteredProducts);
+        }
+
+        function handleSearch() {
+            var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            var category = document.getElementById('categorySelect').value;
+            
+            if (searchTerm === '') {
+                if (category === 'all') {
+                    filteredProducts = allProducts;
+                } else {
+                    filteredProducts = allProducts.filter(function(product) {
+                        return product.data.category === category;
+                    });
+                }
+            } else {
+                var baseProducts = category === 'all' ? allProducts : 
+                    allProducts.filter(function(product) {
+                        return product.data.category === category;
+                    });
+                
+                filteredProducts = baseProducts.filter(function(product) {
+                    var description = (product.data.description || '').toLowerCase();
+                    return description.includes(searchTerm);
+                });
+            }
+            
+            renderProducts(filteredProducts);
         }
     </script>
 </body>
