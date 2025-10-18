@@ -597,7 +597,6 @@
             html += '</div>';
             container.innerHTML = html;
             
-            // 클릭 이벤트 리스너 추가
             attachClickListeners();
         }
 
@@ -614,12 +613,23 @@
         }
 
         function trackClick(productId) {
+            var now = new Date();
+            var clickData = {
+                date: now.toISOString(),
+                timestamp: now.getTime()
+            };
+
             db.collection('products').doc(productId).get()
                 .then(function(doc) {
                     if (doc.exists) {
                         var currentClicks = doc.data().clickCount || 0;
+                        var clicks = doc.data().clicks || [];
+                        
+                        clicks.push(clickData);
+                        
                         return db.collection('products').doc(productId).update({
-                            clickCount: currentClicks + 1
+                            clickCount: currentClicks + 1,
+                            clicks: clicks
                         });
                     }
                 })
