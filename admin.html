@@ -372,6 +372,115 @@
             transform: translateY(-2px);
         }
 
+        /* Statistics Section */
+        .stats-controls {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .date-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-picker label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .date-picker input {
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .date-picker input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .quick-date-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-btn {
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .quick-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .chart-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .chart-stat-item {
+            text-align: right;
+        }
+
+        .chart-stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .chart-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        #clickChart {
+            max-height: 400px;
+        }
+
         /* Statistics Table */
         .stats-table {
             background: white;
@@ -791,6 +900,26 @@
             .modal-content {
                 padding: 25px;
             }
+
+            .stats-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .date-picker {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .quick-date-btns {
+                flex-wrap: wrap;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -888,6 +1017,41 @@
 
         <!-- Statistics Tab Content -->
         <div id="statisticsTab" class="tab-content">
+            <!-- Statistics Controls -->
+            <div class="stats-controls">
+                <div class="date-picker">
+                    <label>기간 선택:</label>
+                    <input type="date" id="startDate">
+                    <span>~</span>
+                    <input type="date" id="endDate">
+                </div>
+                <div class="quick-date-btns">
+                    <button class="quick-btn active" onclick="setDateRange('all')">전체</button>
+                    <button class="quick-btn" onclick="setDateRange(7)">최근 7일</button>
+                    <button class="quick-btn" onclick="setDateRange(30)">최근 30일</button>
+                    <button class="quick-btn" onclick="setDateRange(90)">최근 90일</button>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h3 class="chart-title">📈 일별 클릭 추이</h3>
+                    <div class="chart-stats">
+                        <div class="chart-stat-item">
+                            <div class="chart-stat-label">총 클릭</div>
+                            <div class="chart-stat-value" id="totalClicksChart">0</div>
+                        </div>
+                        <div class="chart-stat-item">
+                            <div class="chart-stat-label">일평균</div>
+                            <div class="chart-stat-value" id="avgClicksChart">0</div>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="clickChart"></canvas>
+            </div>
+
+            <!-- Statistics Table -->
             <div class="stats-table">
                 <div class="stats-table-header">
                     <span class="stats-table-title">🏆 인기 육아용품 순위</span>
@@ -959,6 +1123,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 
     <script>
         var firebaseConfig = {
@@ -975,10 +1140,23 @@
         var editingId = null;
         var allProducts = [];
         var currentFilter = 'all';
+        var clickChart = null;
+        var clicksData = [];
 
         window.onload = function() {
             loadProducts();
+            initializeDateInputs();
         };
+
+        function initializeDateInputs() {
+            var today = new Date();
+            var endDate = today.toISOString().split('T')[0];
+            document.getElementById('endDate').value = endDate;
+            
+            var startDate = new Date();
+            startDate.setMonth(startDate.getMonth() - 3);
+            document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+        }
 
         function loadProducts() {
             var container = document.getElementById('productsContainer');
@@ -1179,6 +1357,7 @@
                     });
             } else {
                 productData.clickCount = 0;
+                productData.clicks = [];
                 db.collection('products').add(productData)
                     .then(function() {
                         alert('등록되었습니다!');
@@ -1231,6 +1410,28 @@
             }
         }
 
+        function setDateRange(days) {
+            var buttons = document.querySelectorAll('.quick-btn');
+            buttons.forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            var endDate = new Date();
+            var startDate = new Date();
+            
+            if (days === 'all') {
+                startDate.setFullYear(2020, 0, 1);
+            } else {
+                startDate.setDate(startDate.getDate() - days);
+            }
+            
+            document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+            document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+            
+            loadStatistics();
+        }
+
         function loadStatistics() {
             var container = document.getElementById('statsTableBody');
             container.innerHTML = '<div class="loading"><div class="spinner"></div><p style="color: #6b7280;">통계를 불러오는 중...</p></div>';
@@ -1238,6 +1439,8 @@
             db.collection('products').get()
                 .then(function(querySnapshot) {
                     var products = [];
+                    clicksData = [];
+                    
                     querySnapshot.forEach(function(doc) {
                         var data = doc.data();
                         products.push({
@@ -1246,6 +1449,16 @@
                             category: data.category || '기타',
                             clickCount: data.clickCount || 0
                         });
+                        
+                        if (data.clicks && Array.isArray(data.clicks)) {
+                            data.clicks.forEach(function(click) {
+                                clicksData.push({
+                                    date: click.date || click.timestamp,
+                                    productId: doc.id,
+                                    productName: data.description || '이름 없음'
+                                });
+                            });
+                        }
                     });
 
                     products.sort(function(a, b) {
@@ -1253,6 +1466,7 @@
                     });
 
                     renderStatistics(products);
+                    renderChart();
                 })
                 .catch(function(error) {
                     console.error('통계 로드 실패:', error);
@@ -1308,6 +1522,100 @@
 
             container.innerHTML = html;
         }
+
+        function renderChart() {
+            var startDateStr = document.getElementById('startDate').value;
+            var endDateStr = document.getElementById('endDate').value;
+            
+            var startDate = new Date(startDateStr);
+            var endDate = new Date(endDateStr);
+            endDate.setHours(23, 59, 59);
+            
+            var filteredClicks = clicksData.filter(function(click) {
+                var clickDate = new Date(click.date);
+                return clickDate >= startDate && clickDate <= endDate;
+            });
+            
+            var dailyClicks = {};
+            filteredClicks.forEach(function(click) {
+                var date = new Date(click.date).toISOString().split('T')[0];
+                dailyClicks[date] = (dailyClicks[date] || 0) + 1;
+            });
+            
+            var labels = [];
+            var data = [];
+            var currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+                var dateStr = currentDate.toISOString().split('T')[0];
+                labels.push(dateStr);
+                data.push(dailyClicks[dateStr] || 0);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            var totalClicks = data.reduce(function(a, b) { return a + b; }, 0);
+            var avgClicks = labels.length > 0 ? (totalClicks / labels.length).toFixed(1) : 0;
+            
+            document.getElementById('totalClicksChart').textContent = totalClicks;
+            document.getElementById('avgClicksChart').textContent = avgClicks;
+            
+            var ctx = document.getElementById('clickChart');
+            
+            if (clickChart) {
+                clickChart.destroy();
+            }
+            
+            clickChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '일별 클릭 수',
+                        data: data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('startDate').addEventListener('change', function() {
+            loadStatistics();
+        });
+
+        document.getElementById('endDate').addEventListener('change', function() {
+            loadStatistics();
+        });
     </script>
 </body>
 </html>
